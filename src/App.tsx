@@ -144,22 +144,23 @@ function App() {
       </section>
 
       <section>
-        {theme && <>
-          <div className='window' style={{
-            backgroundColor: theme.theme.background
-          }}>
-            {
-              color_combos(theme.theme).map((arr, ind) => <>
-                {ind !== 0 && <hr />}
-                {arr.map(c => <Display f={c.f} b={c.b}/>)}
-              </>)
-            }
-          </div>
-        </>}
+        {theme && <ThemeDisplay theme={theme} />}
       </section>
     </>
   )
 }
+
+const ThemeDisplay = ({theme}: {theme: NamedTheme}) =>
+  <div className='window' style={{
+    backgroundColor: theme.theme.background
+  }}>
+    {
+      color_combos(theme.theme).map((arr, ind) => <>
+        {ind !== 0 && <hr />}
+        {arr.map(c => <Display f={c.f} b={c.b}/>)}
+      </>)
+    }
+  </div>;
 
 const Display = (props: {f: string, b: string}) =>
   <div className='display' style={{
