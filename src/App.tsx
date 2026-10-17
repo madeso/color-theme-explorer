@@ -116,7 +116,7 @@ function App() {
   const themes_sorted = all_themes.map(t => ({
     ...t, evaluated: evaluate_theme(t.theme), lowest_contrast: lowest_contrast(t, "worst"), best_contrast: lowest_contrast(t, "best")
   })).toSorted((lhs, rhs) => rhs.evaluated.score - lhs.evaluated.score);
-  const theme_list = themes_sorted.map(t => <tr>
+  const theme_list = themes_sorted.map((t, index) => <tr key={index}>
       <td><ThemeSvg t={t.theme}/></td>
       <td><a onClick={() => {
         setTheme(t);
@@ -139,7 +139,9 @@ function App() {
           <thead>
             {header}
           </thead>
-          {theme_list}
+          <tbody>
+            {theme_list}
+          </tbody>
         </table>
       </section>
 
