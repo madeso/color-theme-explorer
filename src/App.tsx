@@ -146,21 +146,22 @@ function App() {
 }
 
 const ThemeDisplay = ({theme}: {theme: NamedTheme}) =>
-  <div className='window' style={{
+  <div style={{
     backgroundColor: theme.theme.background
   }}>
     {
-      color_combos(theme.theme).map((arr, ind) => <>
-        {ind !== 0 && <hr />}
-        {arr.map(c => <Display f={c.f} b={c.b}/>)}
-      </>)
+      color_combos(theme.theme).map((arr, ind) => <div key={ind} className='columns'>
+        {arr.map((c, ci) => <Display key={ci} f={c.f} b={c.b}/>)}
+      </div>)
     }
   </div>;
 
 const Display = (props: {f: string, b: string}) =>
-  <div className='display' style={{
+  <div className='column is-one-third'>
+    <span style={{
+      padding: "6px",
     backgroundColor: props.b,
     color: props.f
-  }}>Sample text</div>;
+  }}>Sample text</span></div>;
 
 export default App
