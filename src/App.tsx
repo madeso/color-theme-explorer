@@ -145,23 +145,43 @@ function App() {
   )
 }
 
-const ThemeDisplay = ({theme}: {theme: NamedTheme}) =>
-  <div style={{
+const ThemeDisplay = ({theme}: {theme: NamedTheme}) => {
+  const t = {
+    evaluated: evaluate_theme(theme.theme),
+    lowest_contrast: lowest_contrast(theme, "worst"),
+    best_contrast: lowest_contrast(theme, "best")
+  };
+  return <div className='content'>
+      <h1 className='is-2'>{theme.name}</h1>
+      <ThemeSvg t={theme.theme}/>
+      <p><b>Category</b>{t.evaluated.cat}</p>
+      <p><b>Score</b> {t.evaluated.score}</p>
+      <p><b>Contrast</b> {t.lowest_contrast.contrast.toLocaleString(undefined, {maximumFractionDigits:2})} ({t.lowest_contrast.disp})</p>
+      <h3>WCAG</h3>
+      <p><b>Worst Minimum</b> <RatioDesc k="min" cl={classify_ratio(t.lowest_contrast.contrast)}/></p>
+      <p><b>Worst Enhanced</b> <RatioDesc k="enchanced" cl={classify_ratio(t.lowest_contrast.contrast)}/></p>
+      <p><b>Best Minimum</b> <RatioDesc k="min" cl={classify_ratio(t.best_contrast.contrast)}/></p>
+      <p><b>Best Enhanced</b> <RatioDesc k="enchanced" cl={classify_ratio(t.best_contrast.contrast)}/></p>
+    <ColorDisplay theme={theme} />
+  </div>
+}
+const ColorDisplay = ({theme}: {theme: NamedTheme}) =>
+  <div className='columns' style={{
     backgroundColor: theme.theme.background
   }}>
-    {
-      color_combos(theme.theme).map((arr, ind) => <div key={ind} className='columns'>
-        {arr.map((c, ci) => <Display key={ci} f={c.f} b={c.b}/>)}
-      </div>)
-    }
+    <div className='column'>
+      {
+        color_combos(theme.theme).map((arr, ind) => <div key={ind} className='columns is-2'>
+          {arr.map((c, ci) => <Display key={ci} f={c.f} b={c.b}/>)}
+        </div>)
+      }
+    </div>
   </div>;
 
 const Display = (props: {f: string, b: string}) =>
-  <div className='column is-one-third'>
-    <span style={{
-      padding: "6px",
+  <div className='column is-one-third' style={{
     backgroundColor: props.b,
     color: props.f
-  }}>Sample text</span></div>;
+  }}>Sample text</div>;
 
 export default App
