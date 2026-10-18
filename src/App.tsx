@@ -79,7 +79,7 @@ const RatioOk = () => <>OK</>;
 const RatioDesc = ({cl, k}: {cl: RatioClass, k: keyof RatioClass}) => 
   cl[k].large ? ( cl[k].text ? <RatioOk /> : <RatioTextFail/>) : <RatioLargeFail/>;
 
-const ThemeSvg = ({t}: {t: Colors}) => <svg width="96px" height="64px" xmlns="http://www.w3.org/2000/svg" baseProfile="full" version="1.1">
+const ThemeSvg = ({t, className}: {t: Colors, className?: string}) => <svg className={className} width="96px" height="64px" xmlns="http://www.w3.org/2000/svg" baseProfile="full" version="1.1">
         <rect width='96' height='64' id='background' fill={t.background} />
         <circle cx='24' cy='24' r='8' id='f_high' fill={t.f_high} />
         <circle cx='40' cy='24' r='8' id='f_med' fill={t.f_med} />
@@ -101,54 +101,43 @@ function App() {
     ...map("dark", dark_themes),
     ...map("color", color_themes)
   ];
-  const header = <tr>
-    <th>Icon</th>
-    <th>Name</th>
-    <th>Class</th>
-    <th>Category</th>
-    <th>Score</th>
-    <th>Contrast</th>
-    <th>WCAG Min</th>
-    <th>WCAG Ench</th>
-    <th>Best Min</th>
-    <th>Best Ench</th>
-  </tr>;
   const themes_sorted = all_themes.map(t => ({
     ...t, evaluated: evaluate_theme(t.theme), lowest_contrast: lowest_contrast(t, "worst"), best_contrast: lowest_contrast(t, "best")
   })).toSorted((lhs, rhs) => rhs.evaluated.score - lhs.evaluated.score);
-  const theme_list = themes_sorted.map((t, index) => <tr key={index}>
-      <td><ThemeSvg t={t.theme}/></td>
-      <td><a onClick={() => {
-        setTheme(t);
-      }}>{t.name}</a></td>
-      <td>{t.class}</td>
-      <td>{t.evaluated.cat}</td>
-      <td>{t.evaluated.score}</td>
-      <td>{t.lowest_contrast.contrast.toLocaleString(undefined, {maximumFractionDigits:2})} ({t.lowest_contrast.disp})</td>
-      <td><RatioDesc k="min" cl={classify_ratio(t.lowest_contrast.contrast)}/></td>
-      <td><RatioDesc k="enchanced" cl={classify_ratio(t.lowest_contrast.contrast)}/></td>
-      <td><RatioDesc k="min" cl={classify_ratio(t.best_contrast.contrast)}/></td>
-      <td><RatioDesc k="enchanced" cl={classify_ratio(t.best_contrast.contrast)}/></td>
-    </tr>
+  const theme_list = themes_sorted.map((t, index) => <div className="card" key={index}>
+      
+      <div className="card-content">
+        <div className='media'>
+          <div className='media-left'>
+            <figure className="image">
+              <ThemeSvg t={t.theme}/>
+            </figure>
+          </div>
+          <div className="media-content">
+            <a className="title is-5" onClick={() => {
+              setTheme(t);
+            }}>{t.name}</a>
+            <p className="subtitle is-7">
+              {t.evaluated.cat} / {t.evaluated.score} / {t.lowest_contrast.contrast.toLocaleString(undefined, {maximumFractionDigits:2})}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
   
   return (
     <>
       <section className="section">
         <div className="container">
-          <div>
-            <table>
-              <thead>
-                {header}
-              </thead>
-              <tbody>
-                {theme_list}
-              </tbody>
-            </table>
-          </div>
+          <div className="columns">
+            <div className='column grid is-col-min-9'>
+              {theme_list}
+            </div>
 
-          <div>
-            {theme && <ThemeDisplay theme={theme} />}
+            <div className='column is-one-third'>
+              {theme && <ThemeDisplay theme={theme} />}
+            </div>
           </div>
         </div>
       </section>
