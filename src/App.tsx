@@ -134,19 +134,23 @@ function App() {
   
   return (
     <>
-      <section id="center">
-        <table>
-          <thead>
-            {header}
-          </thead>
-          <tbody>
-            {theme_list}
-          </tbody>
-        </table>
-      </section>
+      <section className="section">
+        <div className="container">
+          <div>
+            <table>
+              <thead>
+                {header}
+              </thead>
+              <tbody>
+                {theme_list}
+              </tbody>
+            </table>
+          </div>
 
-      <section>
-        {theme && <ThemeDisplay theme={theme} />}
+          <div>
+            {theme && <ThemeDisplay theme={theme} />}
+          </div>
+        </div>
       </section>
     </>
   )
